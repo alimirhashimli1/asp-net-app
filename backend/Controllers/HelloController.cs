@@ -7,6 +7,6 @@ public class HelloController : ControllerBase
     [HttpGet]
     public string Get()
     {
-        return "Hello, ASP.NET CORE with Docker!"
+        return "Hello, world!";
     }
 }
