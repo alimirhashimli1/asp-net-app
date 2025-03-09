@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/app/app.csproj": {}
+    "C:\\Users\\alimi\\Desktop\\webdev\\asp-net-app\\backend\\backend.csproj": {}
   },
   "projects": {
-    "/app/app.csproj": {
+    "C:\\Users\\alimi\\Desktop\\webdev\\asp-net-app\\backend\\backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/app/app.csproj",
-        "projectName": "app",
-        "projectPath": "/app/app.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/app/obj/",
+        "projectUniqueName": "C:\\Users\\alimi\\Desktop\\webdev\\asp-net-app\\backend\\backend.csproj",
+        "projectName": "backend",
+        "projectPath": "C:\\Users\\alimi\\Desktop\\webdev\\asp-net-app\\backend\\backend.csproj",
+        "packagesPath": "C:\\Users\\alimi\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\alimi\\Desktop\\webdev\\asp-net-app\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\alimi\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -71,7 +71,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.406/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.406/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
