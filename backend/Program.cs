@@ -1,42 +1,44 @@
+using Microsoft.EntityFrameworkCore;
+using backend.data;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<AppDbContext>(options => 
+options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-var app = builder.Build();
+var app.builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.MapGet("/todos", async (AppDbContext db) => 
+await db.Todos.ToListAsync());
+
+app.MapPost("/todos", async (Todo todo, AppDbContext db) =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    db.Todos.Add(todo);
+    await db.SaveChangesAsync();
+    return Results.Created($"/todos/{todo.Id}", todo);
+});
 
-var summaries = new[]
+app.MapPut("/todos/{id}", async (int id, Todo inputTodo, AppDbContext db) => 
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    var todo = await db.Todos.FindAsync(id);
+    if (todo == null) return Results.NotFound();
 
-app.MapGet("/weatherforecast", () =>
+    todo.Title = inputTodo.Title;
+    todo.IsComplete = inputTodo.IsComplete;
+
+    await db.SaveChangesAysnc();
+    return Results.NoContent();
+});
+
+app.MapDelete("/todos/{id}", async (int id, AppDbContext db) => 
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    if (await db.Todos.FindAsync(id) is Todo todo)
+    {
+        db.Todos.Remove(todo);
+        await db.SaveChangesAsync();
+        return Results.NoContent();
+    }
+    return Results.NotFound();
 })
-.WithName("GetWeatherForecast")
-.WithOpenApi();
 
-app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+app.Run()
