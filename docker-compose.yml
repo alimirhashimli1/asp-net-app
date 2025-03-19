@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "1Kaybettim." # Plain text password
+      POSTGRES_DB: todo_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d todo_db"] # Added database check
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  api:
+    build: ./backend
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=db;Database=todo_db;Username=postgres;Password=1Kaybettim." # No URL encoding!
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    command: ["sh", "-c", "sleep 15 && dotnet run"] # Added delay
+
+volumes:
+  postgres_data:

@@ -1,44 +1,94 @@
-using Microsoft.EntityFrameworkCore;
-using backend.data;
+using System.Reflection;
 
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddDbContext<AppDbContext>(options => 
-options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-var app.builder.Build();
-
-app.MapGet("/todos", async (AppDbContext db) => 
-await db.Todos.ToListAsync());
-
-app.MapPost("/todos", async (Todo todo, AppDbContext db) =>
+namespace CSharpBasics
 {
-    db.Todos.Add(todo);
-    await db.SaveChangesAsync();
-    return Results.Created($"/todos/{todo.Id}", todo);
-});
+ public interface IDiscountable
+ {
+     decimal ApplyDiscount(decimal percentage);
+ }   
 
-app.MapPut("/todos/{id}", async (int id, Todo inputTodo, AppDbContext db) => 
-{
-    var todo = await db.Todos.FindAsync(id);
-    if (todo == null) return Results.NotFound();
+ class Product
+ {
+    private decimal _price;
 
-    todo.Title = inputTodo.Title;
-    todo.IsComplete = inputTodo.IsComplete;
+    public string Name {get; set;}
 
-    await db.SaveChangesAysnc();
-    return Results.NoContent();
-});
-
-app.MapDelete("/todos/{id}", async (int id, AppDbContext db) => 
-{
-    if (await db.Todos.FindAsync(id) is Todo todo)
+    public decimal Price
     {
-        db.Todos.Remove(todo);
-        await db.SaveChangesAsync();
-        return Results.NoContent();
+        get {return _price;}
+        set {
+            if(value >= 0) _price = value;
+        }
     }
-    return Results.NotFound();
-})
 
-app.Run()
+    public Product (string name, decimal price){
+        Name = name;
+        Price = price;
+    }
+
+    public virtual void DisplayProductDetails(){
+        Console.WriteLine($"Product : {Name}, Price: {Price:C}");
+    }
+
+    public static decimal CalculateDiscount(decimal price, decimal discountPercentage){
+        return price - (price * discountPercentage / 100);
+    }
+ }
+
+ class Clothing : Product, IDiscountable 
+ {
+    public int Size {get; set;}
+
+    public Clothing(string name, decimal price, int size)
+    :base (name, price)
+    {
+        Size = size;
+    }
+
+    public string GetSizeName()
+    {
+        return Size switch
+        {
+            1 => "S",
+            2 => "M",
+            3 => "L",
+            _ => "Unknown size"
+        };
+    }
+
+        public override void DisplayProductDetails()
+        {
+            base.DisplayProductDetails();
+            Console.WriteLine($"Size: {GetSizeName()}");
+        }
+
+        public decimal ApplyDiscount(decimal percentage)
+        {
+            return CalculateDiscount(Price, percentage);
+        }
+    }
+
+
+    class Program
+    {
+        static void Main()
+        {
+            List<Clothing> catalog = new List<Clothing>();
+            catalog.Add(new Clothing("T-Shirt", 19.99m, 1));
+            catalog.Add(new Clothing("Jeans", 49.99m, 2));
+            catalog.Add(new Clothing("Sweater", 39.99m, 3));
+
+            for(int i = 0; i < catalog.Count; i++) {
+                catalog[i].DisplayProductDetails();
+            }
+
+            foreach(Clothing item in catalog){
+                item.DisplayProductDetails();
+            }
+
+            decimal discountedPrice = catalog[0].ApplyDiscount(10);
+            Console.WriteLine($"Discounted price: {discountedPrice:C}");
+            Console.WriteLine(Product.CalculateDiscount(29.50m, 0.1m));
+                   }
+    }
+}
