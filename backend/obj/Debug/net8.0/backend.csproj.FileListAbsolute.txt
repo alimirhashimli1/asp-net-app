@@ -32,3 +32,4 @@ C:\Users\alimi\Desktop\webdev\todo-app\backend\obj\Debug\net8.0\refint\backend.d
 C:\Users\alimi\Desktop\webdev\todo-app\backend\obj\Debug\net8.0\backend.pdb
 C:\Users\alimi\Desktop\webdev\todo-app\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 C:\Users\alimi\Desktop\webdev\todo-app\backend\obj\Debug\net8.0\ref\backend.dll
+C:\Users\alimi\Desktop\webdev\todo-app\backend\bin\Debug\net8.0\Newtonsoft.Json.dll
